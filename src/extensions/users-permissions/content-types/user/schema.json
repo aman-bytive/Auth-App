@@ -72,6 +72,12 @@
       "type": "string",
       "required": false,
       "unique": true
+    },
+    "devices": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::device.device",
+      "mappedBy": "users_permissions_user"
     }
   }
 }
