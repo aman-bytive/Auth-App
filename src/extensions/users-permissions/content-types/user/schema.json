@@ -68,11 +68,6 @@
     "company": {
       "type": "string"
     },
-    "userId": {
-      "type": "string",
-      "required": false,
-      "unique": true
-    },
     "devices": {
       "type": "relation",
       "relation": "oneToMany",
