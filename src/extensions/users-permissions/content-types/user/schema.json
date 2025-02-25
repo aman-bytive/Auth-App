@@ -65,9 +65,6 @@
       "inversedBy": "users",
       "configurable": false
     },
-    "name": {
-      "type": "string"
-    },
     "company": {
       "type": "string"
     },
