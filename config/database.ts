@@ -14,17 +14,17 @@ export default ({ env }) => {
         ssl: false
       }
     },
-    // postgres: {
-    //   connection: {
-    //     connectionString: env('DATABASE_URL'),
-    //     host: env('DATABASE_HOST', 'localhost'),
-    //     port: env.int('DATABASE_PORT', 5432),
-    //     database: env('DATABASE_NAME', 'strapi'),
-    //     user: env('DATABASE_USERNAME', 'strapi'),
-    //     password: env('DATABASE_PASSWORD', 'strapi'),
-    //     ssl: false
-    //   }
-    // },
+    postgres: {
+      connection: {
+        connectionString: env('DATABASE_URL'),
+        host: env('DATABASE_HOST', 'localhost'),
+        port: env.int('DATABASE_PORT', 5432),
+        database: env('DATABASE_NAME', 'strapi'),
+        user: env('DATABASE_USERNAME', 'strapi'),
+        password: env('DATABASE_PASSWORD', 'strapi'),
+        ssl: false
+      }
+    },
     sqlite: {
       connection: {
         filename: path.join(__dirname, '..', '..', env('DATABASE_FILENAME', 'db/data.db')),
