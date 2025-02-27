@@ -12,7 +12,6 @@ export default factories.createCoreController('api::file-upload.file-upload', ({
         return ctx.badRequest("No file to Upload");
       }
 
-      // First, verify the device exists
       const device = await strapi.entityService.findOne("api::device.device", id);
       console.log("Device found:", device);
 
@@ -20,28 +19,27 @@ export default factories.createCoreController('api::file-upload.file-upload', ({
         return ctx.notFound("Device not Found");
       }
 
-      // Upload files to the media library
+
+      console.log("device.folderId",device.folderId);
+
       const uploadedFiles = await strapi.plugin("upload").service("upload").upload({
         data: {
-          refId: id,
-          ref: "api::device.device",
-          field: "file",
+          fileInfo:{
+            folder:device.folderId
+          }
         },
-        files: Array.isArray(files) ? files : [files], // Ensure files is an array
+        files: Array.isArray(files) ? files : [files], 
       });
 
-      console.log("Uploaded files:", uploadedFiles);
-      
-      // Get the IDs of the uploaded files
+     
       const fileIds = uploadedFiles.map((file) => file.id);
 
-      // Create a new file-upload entity and link it to both the media file and the device
       const newFileUpload = await strapi.entityService.create("api::file-upload.file-upload", {
         data: {
           name: uploadedFiles[0].name,
           file: fileIds, 
           device: id, 
-          publishedAt: new Date()
+          publishedAt: new Date() 
         }
       });
 
