@@ -399,7 +399,7 @@ export interface ApiDeviceDevice extends Struct.CollectionTypeSchema {
       'api::device.device'
     > &
       Schema.Attribute.Private;
-    password: Schema.Attribute.String;
+    password: Schema.Attribute.Password & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
