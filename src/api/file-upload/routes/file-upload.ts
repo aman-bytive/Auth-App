@@ -1,18 +1,7 @@
-import { Route } from "react-router-dom";
-
 module.exports = {
     // routes: [
     //   // Upload file to a specific device
-    //   {
-    //     method: "POST",
-    //     path: "/devices/:id/upload",
-    //     handler: "file-upload.uploadFile",
-    //     config: {
-    //       policies: ["global::isAuthenticated"], // Ensures only authenticated users can upload
-    //       middlewares: [], // You can add middlewares like file validation if needed
-    //     },
-    //   },
-  
+      
     //   // Get all uploaded files for a specific device
     //   {
     //     method: "GET",
@@ -34,7 +23,15 @@ module.exports = {
     //   },
     // ],
     routes:[
-      
+      {
+        method: "POST",
+        path: "/devices/:id/upload",
+        handler: "file-upload.uploadFile",
+        config: {
+          policies: ["global::isAuthenticated"], // Ensures only authenticated users can upload
+          middlewares: [], // You can add middlewares like file validation if needed
+        },
+      },
     ]
   };
   

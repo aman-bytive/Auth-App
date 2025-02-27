@@ -18,9 +18,9 @@ export default factories.createCoreController(
           return;
         }
 
-        const { deviceId } = ctx.request.body;
+        const { deviceId,password,deviceName } = ctx.request.body;
 
-        if (!deviceId) {
+        if (!deviceId && !password && !deviceName) {
           return ctx.badRequest("Device name is required");
         }
 
@@ -37,6 +37,8 @@ export default factories.createCoreController(
           {
             data: {
               deviceId,
+              password,
+              deviceName,
               users_permissions_user: user.id,
               folderId: `${folderResponse.id}`,
             },
