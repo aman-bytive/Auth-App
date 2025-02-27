@@ -387,6 +387,11 @@ export interface ApiDeviceDevice extends Struct.CollectionTypeSchema {
     deviceId: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
+    deviceName: Schema.Attribute.String;
+    file_uploads: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::file-upload.file-upload'
+    >;
     folderId: Schema.Attribute.Text & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -394,6 +399,7 @@ export interface ApiDeviceDevice extends Struct.CollectionTypeSchema {
       'api::device.device'
     > &
       Schema.Attribute.Private;
+    password: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -402,6 +408,36 @@ export interface ApiDeviceDevice extends Struct.CollectionTypeSchema {
       'manyToOne',
       'plugin::users-permissions.user'
     >;
+  };
+}
+
+export interface ApiFileUploadFileUpload extends Struct.CollectionTypeSchema {
+  collectionName: 'file_uploads';
+  info: {
+    displayName: 'file-upload';
+    pluralName: 'file-uploads';
+    singularName: 'file-upload';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    device: Schema.Attribute.Relation<'manyToOne', 'api::device.device'>;
+    file: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::file-upload.file-upload'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -916,6 +952,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::device.device': ApiDeviceDevice;
+      'api::file-upload.file-upload': ApiFileUploadFileUpload;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

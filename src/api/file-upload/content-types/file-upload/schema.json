@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "file_uploads",
+  "info": {
+    "singularName": "file-upload",
+    "pluralName": "file-uploads",
+    "displayName": "file-upload"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "file": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "device": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::device.device",
+      "inversedBy": "file_uploads"
+    }
+  }
+}

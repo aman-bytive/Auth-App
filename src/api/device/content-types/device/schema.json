@@ -25,6 +25,18 @@
     "folderId": {
       "type": "text",
       "required": true
+    },
+    "file_uploads": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::file-upload.file-upload",
+      "mappedBy": "device"
+    },
+    "deviceName": {
+      "type": "string"
+    },
+    "password": {
+      "type": "string"
     }
   }
 }
