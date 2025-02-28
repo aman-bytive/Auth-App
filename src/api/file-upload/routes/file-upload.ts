@@ -3,14 +3,6 @@ module.exports = {
     //   // Upload file to a specific device
       
     //   // Get all uploaded files for a specific device
-    //   {
-    //     method: "GET",
-    //     path: "/devices/:id/files",
-    //     handler: "file-upload.getFiles",
-    //     config: {
-    //       policies: ["global::isAuthenticated"], // Ensures only authenticated users can access files
-    //     },
-    //   },
   
     //   // Delete a specific file from a device
     //   {
@@ -30,6 +22,14 @@ module.exports = {
         config: {
           policies: ["global::isAuthenticated"], // Ensures only authenticated users can upload
           middlewares: [], // You can add middlewares like file validation if needed
+        },
+      },
+      {
+        method: "GET",
+        path: "/devices/:id/files",
+        handler: "file-upload.getFiles",
+        config: {
+          policies: ["global::isAuthenticated"], // Ensures only authenticated users can access files
         },
       },
     ]
