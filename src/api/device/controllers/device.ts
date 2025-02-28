@@ -99,6 +99,22 @@ export default factories.createCoreController(
           );
         }
 
+        const fileUploads = await strapi.entityService.findMany(
+          "api::file-upload.file-upload",
+          {
+            filters: { device:device},
+          }
+        );
+
+        console.log(fileUploads);
+
+        for (const fileUpload of fileUploads) {
+          await strapi.entityService.delete(
+            "api::file-upload.file-upload",
+            fileUpload.id
+          );
+        }
+
         await strapi
           .plugin("upload")
           .service("folder")
