@@ -90,5 +90,30 @@ export default factories.createCoreController('api::file-upload.file-upload', ({
       console.error("Error Getting Files:",error);
       ctx.throw(500,`Error Gettin Files:${error.message}`);
     }
+  },
+
+  async deleteFile(ctx:Context){
+    try{
+      const {fileId} = ctx.params;
+
+      const fileUploadEntry = await strapi.entityService.findMany("api::file-upload.file-upload", {
+        filters: { file: fileId },
+      });
+
+      if (fileUploadEntry.length) {
+        await strapi.entityService.delete("api::file-upload.file-upload", fileUploadEntry[0].id);
+        console.log(fileUploadEntry);
+      }
+
+      const deletedFile = await strapi.plugin("upload").service("upload").remove({id:fileId})
+
+      console.log(deletedFile);
+
+      return ctx.send({ message: "File deleted successfully" });
+
+    }catch(error){
+      console.error("Error Deleting file:",error);
+      ctx.throw(500,`Error Deleting File${error.message}`);
+    }
   }
 }));
