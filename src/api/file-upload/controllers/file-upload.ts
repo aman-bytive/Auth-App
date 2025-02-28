@@ -1,5 +1,6 @@
 import { factories } from '@strapi/strapi'
 import { Context } from "koa";
+import bcrypt from "bcrypt";
 
 export default factories.createCoreController('api::file-upload.file-upload', ({ strapi }) => ({
   async uploadFile(ctx: Context) {
@@ -52,6 +53,42 @@ export default factories.createCoreController('api::file-upload.file-upload', ({
     } catch (error) {
       console.error("Error uploading file:", error);
       ctx.throw(500, `Error uploading file: ${error.message}`);
+    }
+  },
+
+  async getFiles(ctx:Context){
+    try{
+      const id =Number(ctx.params.id);
+      console.log("Full request:", ctx.request);
+      const password = ctx.query.password as string;
+
+      console.log("Device id:",id);
+      console.log("device password:",password);
+      const device = await strapi.entityService.findOne("api::device.device", id);
+     
+      if(!device){
+        return ctx.notFound("Device not Found");
+      }
+       console.log("Device found:", device);
+
+      const isMatch = await bcrypt.compare(password,device.password);
+
+      if(!isMatch){
+        return ctx.unauthorized("Incorrect Password");
+      }
+
+      const allUploadedFiles = await strapi.plugin("upload").service("upload").findMany({
+        filters: {
+          folder: device.folderId, 
+        },
+      });
+      console.log(allUploadedFiles);
+
+      return ctx.send({ files: allUploadedFiles });
+
+    }catch(error){
+      console.error("Error Getting Files:",error);
+      ctx.throw(500,`Error Gettin Files:${error.message}`);
     }
   }
 }));
