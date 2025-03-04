@@ -31,7 +31,7 @@ export default factories.createCoreController(
         console.log(existingDevices);
 
         if(existingDevices.length){
-          return ctx.badRequest("device id must be unique");
+          return ctx.badRequest("This device is already registered in system");
         }
 
         const folderResponse = await strapi
