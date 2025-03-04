@@ -60,10 +60,10 @@ export default factories.createCoreController('api::file-upload.file-upload', ({
     try{
       const id =Number(ctx.params.id);
       console.log("Full request:", ctx.request);
-      const password = ctx.query.password as string;
+      // const password = ctx.query.password as string;
 
       console.log("Device id:",id);
-      console.log("device password:",password);
+      // console.log("device password:",password);
       const device = await strapi.entityService.findOne("api::device.device", id);
      
       if(!device){
@@ -71,21 +71,23 @@ export default factories.createCoreController('api::file-upload.file-upload', ({
       }
        console.log("Device found:", device);
 
-      const isMatch = await bcrypt.compare(password,device.password);
+      // const isMatch = await bcrypt.compare(password,device.password);
 
-      if(!isMatch){
-        return ctx.unauthorized("Incorrect Password");
-      }
+      // if(!isMatch){
+      //   return ctx.unauthorized("Incorrect Password");
+      // }
 
       const allUploadedFiles = await strapi.plugin("upload").service("upload").findMany({
         filters: {
           folder: device.folderId, 
         },
       });
-      console.log(allUploadedFiles);
+      
+      const visibleFiles = allUploadedFiles.filter(file => !file.name.startsWith("."));
 
-      return ctx.send({ files: allUploadedFiles });
+      console.log(visibleFiles);
 
+      return ctx.send({ files: visibleFiles });
     }catch(error){
       console.error("Error Getting Files:",error);
       ctx.throw(500,`Error Gettin Files:${error.message}`);
