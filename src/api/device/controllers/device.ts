@@ -20,8 +20,18 @@ export default factories.createCoreController(
 
         const { deviceId,password,deviceName } = ctx.request.body;
 
-        if (!deviceId && !password && !deviceName) {
-          return ctx.badRequest("Device name is required");
+        if (!deviceId || !password || !deviceName) {
+          return ctx.badRequest("Device ID, password, and device name are required");
+        }
+
+        const existingDevices = await strapi.entityService.findMany("api::device.device", {
+          filters: { deviceId: deviceId },
+        });
+                
+        console.log(existingDevices);
+
+        if(existingDevices.length){
+          return ctx.badRequest("device id must be unique");
         }
 
         const folderResponse = await strapi
