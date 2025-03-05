@@ -4,6 +4,8 @@
 
 import { factories } from "@strapi/strapi";
 import { Context } from "koa";
+import fs from "fs";
+import path from "path";
 
 export default factories.createCoreController(
   "api::device.device",
@@ -18,19 +20,24 @@ export default factories.createCoreController(
           return;
         }
 
-        const { deviceId,password,deviceName } = ctx.request.body;
+        const { deviceId, password, deviceName } = ctx.request.body;
 
         if (!deviceId || !password || !deviceName) {
-          return ctx.badRequest("Device ID, password, and device name are required");
+          return ctx.badRequest(
+            "Device ID, password, and device name are required"
+          );
         }
 
-        const existingDevices = await strapi.entityService.findMany("api::device.device", {
-          filters: { deviceId: deviceId },
-        });
-                
+        const existingDevices = await strapi.entityService.findMany(
+          "api::device.device",
+          {
+            filters: { deviceId: deviceId },
+          }
+        );
+
         console.log(existingDevices);
 
-        if(existingDevices.length){
+        if (existingDevices.length) {
           return ctx.badRequest("This device is already registered in system");
         }
 
@@ -41,6 +48,17 @@ export default factories.createCoreController(
             name: `device-${deviceId}`,
             parent: null,
           });
+
+        const publicDir: string = strapi.dirs.static.public;
+        const deviceFolderPath = path.join(
+          publicDir,
+          "uploads",
+          `device-${deviceId}`
+        );
+
+        if (!fs.existsSync(deviceFolderPath)) {
+          fs.mkdirSync(deviceFolderPath, { recursive: true });
+        }
 
         const newDevice = await strapi.entityService.create(
           "api::device.device",
@@ -109,15 +127,31 @@ export default factories.createCoreController(
           );
         }
 
+        //delete the device folder that is in upload folder (CUSTOM FOLDER)
+        const publicDir: string = strapi.dirs.static.public;
+        const deviceFolderPath = path.join(
+          publicDir,
+          "uploads",
+          `device-${device.deviceId}`
+        );
+
+        if (fs.existsSync(deviceFolderPath)) {
+          fs.rmSync(deviceFolderPath, { recursive: true, force: true });
+          console.log(`Deleted folder: ${deviceFolderPath}`);
+        } else {
+          console.error(`Folder not found: ${deviceFolderPath}`);
+        }
+
         const fileUploads = await strapi.entityService.findMany(
           "api::file-upload.file-upload",
           {
-            filters: { device:device},
+            filters: { device: device },
           }
         );
 
         console.log(fileUploads);
 
+        //delete from file upload collection
         for (const fileUpload of fileUploads) {
           await strapi.entityService.delete(
             "api::file-upload.file-upload",
