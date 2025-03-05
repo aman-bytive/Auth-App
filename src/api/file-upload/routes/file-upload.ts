@@ -19,7 +19,7 @@ module.exports = {
       },
       {
         method: "DELETE",
-        path: "/files/:fileId",
+        path: "/devices/:id/files/:fileId",
         handler: "file-upload.deleteFile",
         config: {
           policies: ["global::isAuthenticated"], 
