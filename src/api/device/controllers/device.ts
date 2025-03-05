@@ -6,6 +6,7 @@ import { factories } from "@strapi/strapi";
 import { Context } from "koa";
 import fs from "fs";
 import path from "path";
+import { getDeviceStatus } from "./status";
 
 export default factories.createCoreController(
   "api::device.device",
@@ -80,7 +81,6 @@ export default factories.createCoreController(
         ctx.throw(500, error);
       }
     },
-
     async findUserDevices(ctx: Context) {
       try {
         const user = ctx.state.user;
@@ -96,7 +96,17 @@ export default factories.createCoreController(
           { filters: { users_permissions_user: user.id } }
         );
 
-        ctx.send(devices);
+        
+
+        const devicesWithStatus = await Promise.all(
+          devices.map(async (device) => {
+            const { status, version } = await getDeviceStatus(device.deviceId);
+            return { ...device, status, version }; // Merging the status and version into the device object
+          })
+        );
+    
+        // Send response
+        ctx.send(devicesWithStatus);
       } catch (error) {
         ctx.throw(500, error);
       }
