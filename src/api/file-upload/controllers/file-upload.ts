@@ -3,6 +3,10 @@ import { Context } from "koa";
 import bcrypt from "bcrypt";
 import fs from "fs";
 import path from "path";
+interface StrapiFile {
+  name?: string; 
+  originalFilename?: string;
+}
 
 export default factories.createCoreController(
   "api::file-upload.file-upload",
@@ -11,7 +15,15 @@ export default factories.createCoreController(
       try {
         const id = Number(ctx.params.id);
         const files = ctx.request.files.files;
-        console.log("🚀 ~ uploadFile ~ files:", files);
+
+        // get the uploaded fileName from user
+        const uploadedFilesForName: StrapiFile[] = Array.isArray(files)
+          ? files
+          : [files];
+
+        const filetodelete = uploadedFilesForName[0].originalFilename;
+
+        console.log("filetodelete", filetodelete);
 
         if (!files) {
           return ctx.badRequest("No file to Upload");
@@ -27,6 +39,7 @@ export default factories.createCoreController(
           return ctx.notFound("Device not Found");
         }
 
+        //get all the uploaded files for that device
         const allUploadedFiles = await strapi
           .plugin("upload")
           .service("upload")
@@ -35,7 +48,44 @@ export default factories.createCoreController(
               folder: device.folderId,
             },
           });
-          
+
+        console.log("allUploadedFiles=====>", allUploadedFiles);
+
+        //check for the same fileName in previously uploaded file
+        const fileToDeleteEntry = allUploadedFiles.find(
+          (file) => file.name === filetodelete
+        );
+
+        if (fileToDeleteEntry) {
+
+          //if same file is found then delete the previous file from everywhere
+          console.log("File ID to delete:", fileToDeleteEntry.id);
+
+          const fileUploadEntry = await strapi.entityService.findMany(
+            "api::file-upload.file-upload",
+            {
+              filters: { file: fileToDeleteEntry.id },
+            }
+          );
+
+          if (fileUploadEntry.length) {
+            await strapi.entityService.delete(
+              "api::file-upload.file-upload",
+              fileUploadEntry[0].id
+            );
+            console.log(fileUploadEntry);
+          }
+
+          const deletedFile = await strapi
+            .plugin("upload")
+            .service("upload")
+            .remove({ id: fileToDeleteEntry.id });
+
+        } else {
+          //if no fileName matches with previously uploaded file
+          console.log("File not found.");
+        }
+
         console.log("device.folderId", device.folderId);
 
         const uploadedFiles = await strapi
@@ -180,11 +230,17 @@ export default factories.createCoreController(
         console.log(fileUploadEntry[0].name);
 
         if (fileUploadEntry.length) {
-          await strapi.entityService.delete("api::file-upload.file-upload", fileUploadEntry[0].id);
+          await strapi.entityService.delete(
+            "api::file-upload.file-upload",
+            fileUploadEntry[0].id
+          );
           console.log(fileUploadEntry);
         }
 
-        const deletedFile = await strapi.plugin("upload").service("upload").remove({id:fileId})
+        const deletedFile = await strapi
+          .plugin("upload")
+          .service("upload")
+          .remove({ id: fileId });
 
         console.log(deletedFile);
 
