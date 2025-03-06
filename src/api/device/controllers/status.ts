@@ -4,7 +4,7 @@ export const getDeviceStatus = async (deviceId: string) => {
     try {
         // Construct the path to the `.status` file
         const publicDir: string = strapi.dirs.static.public;
-        const deviceFolderPath = path.join(publicDir, "uploads", `device-${deviceId}`);
+        const deviceFolderPath = path.join(publicDir, "uploads", `${deviceId}`);
         const statusFilePath = path.join(deviceFolderPath, ".status");
     
         let status = "No connection";

@@ -104,7 +104,7 @@ export default factories.createCoreController(
         const deviceFolderPath = path.join(
           publicDir,
           "uploads",
-          `device-${device.deviceId}`
+          `${device.deviceId}`
         );
 
         uploadedFiles.forEach((file) => {
@@ -215,7 +215,7 @@ export default factories.createCoreController(
         const deviceFolderPath = path.join(
           publicDir,
           "uploads",
-          `device-${device.deviceId}`
+          `${device.deviceId}`
         );
         const filePath = path.join(deviceFolderPath, fileUploadEntry[0].name);
         console.log(filePath);

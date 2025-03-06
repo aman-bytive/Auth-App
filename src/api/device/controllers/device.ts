@@ -46,7 +46,7 @@ export default factories.createCoreController(
           .plugin("upload")
           .service("folder")
           .create({
-            name: `device-${deviceId}`,
+            name: `${deviceId}`,
             parent: null,
           });
 
@@ -54,7 +54,7 @@ export default factories.createCoreController(
         const deviceFolderPath = path.join(
           publicDir,
           "uploads",
-          `device-${deviceId}`
+          `${deviceId}`
         );
 
         if (!fs.existsSync(deviceFolderPath)) {
@@ -142,7 +142,7 @@ export default factories.createCoreController(
         const deviceFolderPath = path.join(
           publicDir,
           "uploads",
-          `device-${device.deviceId}`
+          `${device.deviceId}`
         );
 
         if (fs.existsSync(deviceFolderPath)) {
