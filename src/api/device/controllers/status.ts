@@ -19,7 +19,7 @@ export const getDeviceStatus = async (deviceId: string) => {
           // Read file content to get version
           version = fs.readFileSync(statusFilePath, "utf8").trim();
     
-          status = `Last connection: ${lastModified}`;
+          status = `${lastModified}`;
         }
     
         return { status, version };
