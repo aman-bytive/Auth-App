@@ -17,7 +17,13 @@ export default {
         path: "/devices/:id",
         handler: "device.delete",
         config: { policies: ["global::isAuthenticated"] }
-      }
+      },
+      {
+        method: "GET",
+        path: "/device/:id",
+        handler: "device.findUniqueDevice",
+        config: { policies: ["global::isAuthenticated"] }
+      },
     ]
   };
   

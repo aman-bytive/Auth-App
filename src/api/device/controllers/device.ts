@@ -181,5 +181,24 @@ export default factories.createCoreController(
         ctx.throw(500, error);
       }
     },
+
+    async findUniqueDevice(ctx:Context){
+      try{
+        const {id} = ctx.params;
+
+        const device = await strapi.entityService.findOne("api::device.device",id);
+        if(!device){
+          return ctx.notFound("Device not found");
+        }
+
+        console.log(device);
+
+        return ctx.send(device);
+
+      }catch (error) {
+        console.error(error)
+        ctx.throw(500, error);
+      }
+    }
   })
 );
