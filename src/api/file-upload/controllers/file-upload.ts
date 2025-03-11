@@ -2,29 +2,19 @@ import { factories } from "@strapi/strapi";
 import { Context } from "koa";
 import bcrypt from "bcrypt";
 import fs from "fs";
-import koaMulter from '@koa/multer';  
 import path from "path";
 interface StrapiFile {
   name?: string; 
   originalFilename?: string;
 }
-// Create upload middleware
-const upload = koaMulter();
 
 export default factories.createCoreController(
   "api::file-upload.file-upload",
   ({ strapi }) => ({
     async uploadFile(ctx: Context) {
       try {
-
-        const filss = await upload.single('files');
-        const files = ctx.request.files;
-
-        console.log(files);
-
         const id = Number(ctx.params.id);
-
-        // const files = ctx.request.files.files;
+        const files = ctx.request.files.files;
 
         // get the uploaded fileName from user
         const uploadedFilesForName: StrapiFile[] = Array.isArray(files)
@@ -90,7 +80,7 @@ export default factories.createCoreController(
             .plugin("upload")
             .service("upload")
             .remove({ id: fileToDeleteEntry.id });
-        
+
         } else {
           //if no fileName matches with previously uploaded file
           console.log("File not found.");
@@ -99,8 +89,6 @@ export default factories.createCoreController(
         console.log("device.folderId", device.folderId);
 
         console.log("filessss===>>",files);
-
-        
 
         const uploadedFiles = await strapi
           .plugin("upload")
@@ -111,7 +99,7 @@ export default factories.createCoreController(
                 folder: device.folderId, //virtual folder in strapi
               },
             },
-            files: files.files,
+            files: Array.isArray(files) ? files : [files],
           });
 
         const publicDir: string = strapi.dirs.static.public;
